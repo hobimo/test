@@ -6,6 +6,9 @@
     <title>Random Color Generator with Spider</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
             font-family: Arial, sans-serif;
             text-align: center;
             transition: background-color 0.5s;
@@ -18,6 +21,9 @@
             margin: 20px;
         }
         button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -29,10 +35,21 @@
         button:hover {
             background-color: #0056b3;
         }
-        #spider-image {
+        #spider-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: none;
-            width: 200px;
-            margin: 20px;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            z-index: 999;
+        }
+        #spider-image {
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
@@ -40,9 +57,16 @@
     <h1>Random Color Generator with Spider</h1>
     <div id="color-display">Background Color: <span id="currentColor">#FFFFFF</span></div>
     <button id="generateButton">Generate Color</button>
-    <img src="https://s26162.pcdn.co/wp-content/uploads/2022/09/scarystoriesspiders-scaled-1.jpg" id="spider-image" alt="Spider Image">
+    <div id="spider-container">
+        <img src="https://s26162.pcdn.co/wp-content/uploads/2022/09/scarystoriesspiders-scaled-1.jpg" id="spider-image" alt="Spider Image">
+    </div>
+    <audio id="eerieSound" preload="auto">
+        <source src="https://pixabay.com/sound-effects/download/audio/halloween-impact-05-93808.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
+        const eerieSound = document.getElementById("eerieSound");
+
         // Function to generate a random color in hexadecimal format
         function generateRandomColor() {
             const letters = "0123456789ABCDEF";
@@ -56,7 +80,7 @@
         // Function to change the background color to the generated color
         function changeBackgroundColor() {
             const colorDisplay = document.getElementById("currentColor");
-            const spiderImage = document.getElementById("spider-image");
+            const spiderContainer = document.getElementById("spider-container");
             const newColor = generateRandomColor();
             document.body.style.backgroundColor = newColor;
             colorDisplay.textContent = newColor;
@@ -64,11 +88,14 @@
             // Check if the color is dark (you can adjust the threshold)
             const isDarkColor = isColorDark(newColor);
 
-            // Toggle the visibility of the spider image
+            // Toggle the visibility of the spider container
             if (isDarkColor) {
-                spiderImage.style.display = "block";
+                spiderContainer.style.display = "flex";
+                eerieSound.play(); // Play the eerie sound
             } else {
-                spiderImage.style.display = "none";
+                spiderContainer.style.display = "none";
+                eerieSound.pause();
+                eerieSound.currentTime = 0; // Reset the sound
             }
         }
 
