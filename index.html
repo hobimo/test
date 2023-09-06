@@ -3,102 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korean Phrases</title>
+    <title>Random Color Generator</title>
     <style>
         body {
-            background-color: lightblue;
-            color: black;
             font-family: Arial, sans-serif;
             text-align: center;
+            transition: background-color 0.5s;
         }
         h1 {
-            margin-top: 20px;
+            margin-top: 50px;
         }
-        #phrase-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
+        #color-display {
+            font-size: 24px;
+            margin: 20px;
         }
-        select, button {
-            margin-top: 10px;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #0074d9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
         }
-        audio {
-            display: none;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Korean Phrases and Translations</h1>
-    <div id="phrase-container">
-        <select id="language-select">
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="nl">Dutch</option>
-        </select>
-        <button id="generateButton">Generate Phrase</button>
-        <button id="playAudioButton" style="display:none;">Play Audio</button>
-        <p id="phrase-display"></p>
-        <audio id="audioElement" controls></audio>
-    </div>
+    <h1>Random Color Generator</h1>
+    <div id="color-display">Background Color: <span id="currentColor">#FFFFFF</span></div>
+    <button id="generateButton">Generate Color</button>
+
     <script>
-        // Korean phrases and translations
-        const phrases = [
-            { korean: "안녕하세요", translations: { en: "Hello", es: "Hola", fr: "Bonjour", de: "Hallo", nl: "Hallo" }, audio: "audio/hello.mp3" },
-            { korean: "감사합니다", translations: { en: "Thank you", es: "Gracias", fr: "Merci", de: "Danke", nl: "Dank je" }, audio: "audio/thank_you.mp3" },
-            { korean: "미안해요", translations: { en: "I'm sorry", es: "Lo siento", fr: "Je suis désolé", de: "Es tut mir leid", nl: "Het spijt me" }, audio: "audio/sorry.mp3" },
-            // Add 50 more phrases and translations here
-            { korean: "사과", translations: { en: "Apple", es: "Manzana", fr: "Pomme", de: "Apfel", nl: "Appel" }, audio: "audio/apple.mp3" },
-            { korean: "바나나", translations: { en: "Banana", es: "Plátano", fr: "Banane", de: "Banane", nl: "Banaan" }, audio: "audio/banana.mp3" },
-            // Add more phrases and translations here
-        ];
-
-        // Function to generate a random phrase
-        function generateRandomPhrase() {
-            const select = document.getElementById("language-select");
-            const selectedLanguage = select.value;
-            const randomIndex = Math.floor(Math.random() * phrases.length);
-            const phrase = phrases[randomIndex];
-            const translation = phrase.translations[selectedLanguage];
-            return { phrase: `${phrase.korean} - ${translation}`, audio: phrase.audio };
-        }
-
-        // Function to display the generated phrase
-        function displayRandomPhrase() {
-            const phraseDisplay = document.getElementById("phrase-display");
-            const playAudioButton = document.getElementById("playAudioButton");
-            const audioElement = document.getElementById("audioElement");
-
-            const { phrase, audio } = generateRandomPhrase();
-
-            phraseDisplay.textContent = phrase;
-
-            if (audio) {
-                audioElement.src = audio;
-                playAudioButton.style.display = "inline-block";
-            } else {
-                playAudioButton.style.display = "none";
+        // Function to generate a random color in hexadecimal format
+        function generateRandomColor() {
+            const letters = "0123456789ABCDEF";
+            let color = "#";
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
             }
+            return color;
         }
 
-        // Function to play audio
-        function playAudio() {
-            const audioElement = document.getElementById("audioElement");
-            audioElement.play();
+        // Function to change the background color to the generated color
+        function changeBackgroundColor() {
+            const colorDisplay = document.getElementById("currentColor");
+            const newColor = generateRandomColor();
+            document.body.style.backgroundColor = newColor;
+            colorDisplay.textContent = newColor;
         }
 
-        // Attach event listener to the "Generate Phrase" button
+        // Attach event listener to the "Generate Color" button
         const generateButton = document.getElementById("generateButton");
-        generateButton.addEventListener("click", displayRandomPhrase);
+        generateButton.addEventListener("click", changeBackgroundColor);
 
-        // Attach event listener to the "Play Audio" button
-        const playAudioButton = document.getElementById("playAudioButton");
-        playAudioButton.addEventListener("click", playAudio);
-
-        // Initial display
-        displayRandomPhrase();
+        // Initial color generation
+        changeBackgroundColor();
     </script>
 </body>
 </html>
