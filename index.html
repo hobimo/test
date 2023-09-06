@@ -3,66 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Following Eyes</title>
+    <title>Sudoku Game</title>
     <style>
         body {
-            margin: 0;
-            overflow: hidden;
-            cursor: none; /* Hide the default cursor */
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
-        .eye {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background-color: white;
-            border-radius: 50%;
-            border: 2px solid black;
+        .sudoku-board {
+            display: grid;
+            grid-template-columns: repeat(9, 50px);
+            gap: 2px;
+            margin: 20px auto;
         }
-        .pupil {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background-color: black;
-            border-radius: 50%;
-            left: 30px;
-            top: 30px;
-            transition: transform 100ms;
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 24px;
+        }
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            font-size: 24px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="eye" id="left-eye"></div>
-    <div class="eye" id="right-eye"></div>
-    <div class="pupil" id="left-pupil"></div>
-    <div class="pupil" id="right-pupil"></div>
-    
+    <h1>Sudoku Game</h1>
+    <div class="sudoku-board" id="sudoku-board"></div>
+    <button id="solveButton">Solve</button>
+
     <script>
-        const leftEye = document.getElementById("left-eye");
-        const rightEye = document.getElementById("right-eye");
-        const leftPupil = document.getElementById("left-pupil");
-        const rightPupil = document.getElementById("right-pupil");
+        // Sudoku puzzle data (0 represents empty cells)
+        const puzzle = [
+            [5, 3, 0, 0, 7, 0, 0, 0, 0],
+            [6, 0, 0, 1, 9, 5, 0, 0, 0],
+            [0, 9, 8, 0, 0, 0, 0, 6, 0],
+            [8, 0, 0, 0, 6, 0, 0, 0, 3],
+            [4, 0, 0, 8, 0, 3, 0, 0, 1],
+            [7, 0, 0, 0, 2, 0, 0, 0, 6],
+            [0, 6, 0, 0, 0, 0, 2, 8, 0],
+            [0, 0, 0, 4, 1, 9, 0, 0, 5],
+            [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ];
 
-        document.addEventListener("mousemove", (e) => {
-            // Calculate the distance from the center of the eye
-            const eyeRect = leftEye.getBoundingClientRect();
-            const eyeCenterX = eyeRect.left + eyeRect.width / 2;
-            const eyeCenterY = eyeRect.top + eyeRect.height / 2;
-            const deltaX = e.clientX - eyeCenterX;
-            const deltaY = e.clientY - eyeCenterY;
+        // Create the Sudoku board
+        const sudokuBoard = document.getElementById("sudoku-board");
 
-            // Calculate the angle
-            const angle = Math.atan2(deltaY, deltaX);
-            
-            // Limit the pupil's movement within the eye
-            const maxDistance = eyeRect.width / 3;
-            const distance = Math.min(Math.hypot(deltaX, deltaY), maxDistance);
-            const pupilX = Math.cos(angle) * distance;
-            const pupilY = Math.sin(angle) * distance;
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                const input = document.createElement("input");
+                input.type = "number";
+                input.min = "1";
+                input.max = "9";
+                if (puzzle[i][j] !== 0) {
+                    input.value = puzzle[i][j];
+                    input.disabled = true;
+                }
+                cell.appendChild(input);
+                sudokuBoard.appendChild(cell);
+            }
+        }
 
-            // Apply the transformation to the pupils
-            leftPupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
-            rightPupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
-        });
+        // Function to check if a Sudoku solution is valid
+        function isSudokuValid(board) {
+            // Check rows
+            for (let i = 0; i < 9; i++) {
+                const rowSet = new Set();
+                for (let j = 0; j < 9; j++) {
+                    if (rowSet.has(board[i][j])) {
+                        return false;
+                    }
+                    if (board[i][j] !== 0) {
+                        rowSet.add(board[i][j]);
+                    }
+                }
+            }
+
+            // Check columns
+            for (let j = 0; j < 9; j++) {
+                const colSet = new Set();
+                for (let i = 0; i < 9; i++) {
+                    if (colSet.has(board[i][j])) {
+                        return false;
+                    }
+                    if (board[i][j] !== 0) {
+                        colSet.add(board[i][j]);
+                    }
+                }
+            }
+
+            // Check 3x3 subgrids
+            for (let i = 0; i < 9; i += 3) {
+                for (let j = 0; j < 9; j += 3) {
+                    const subgridSet = new Set();
+                    for (let x = i; x < i + 3; x++) {
+                        for (let y = j; y < j + 3; y++) {
+                            if (subgridSet.has(board[x][y])) {
+                                return false;
+                            }
+                            if (board[x][y] !== 0) {
+                                subgridSet.add(board[x][y]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Function to solve the Sudoku puzzle
+        function solveSudoku() {
+            const solvedPuzzle = JSON.parse(JSON.stringify(puzzle)); // Clone the puzzle
+            if (solveSudokuHelper(solvedPuzzle)) {
+                if (isSudokuValid(solvedPuzzle)) {
+                    // Fill the Sudoku board with the solution
+                    const inputs = document.querySelectorAll(".cell input");
+                    let index = 0;
+                    for (let i = 0; i < 9; i++) {
+                        for (let j = 0; j < 9; j++) {
+                            if (!inputs[index].disabled) {
+                                inputs[index].value = solvedPuzzle[i][j];
+                            }
+                            index++;
+                        }
+                    }
+                } else {
+                    alert("Invalid Sudoku puzzle.");
+                }
+            } else {
+                alert("No solution found.");
+            }
+        }
+
+        // Function to recursively solve the Sudoku puzzle
+        function solveSudokuHelper(board) {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    if (board[row][col] === 0) {
+                        for (let num = 1; num <= 9; num++) {
+                            if (isValidMove(board, row, col, num)) {
+                                board[row][col] = num;
+                                if (solveSudokuHelper(board)) {
+                                    return true;
+                                }
+                                board[row][col] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Function to check if a number can be placed in a Sudoku cell
+        function isValidMove(board, row, col, num) {
+            for (let i = 0; i < 9; i++) {
+                if (board[row][i] === num || board[i][col] === num) {
+                    return false;
+                }
+            }
+
+            const startRow = Math.floor(row / 3) * 3;
+            const startCol = Math.floor(col / 3) * 3;
+            for (let i = startRow; i < startRow + 3; i++) {
+                for (let j = startCol; j < startCol + 3; j++) {
+                    if (board[i][j] === num) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Attach event listener to the Solve button
+        const solveButton = document.getElementById("solveButton");
+        solveButton.addEventListener("click", solveSudoku);
     </script>
 </body>
 </html>
