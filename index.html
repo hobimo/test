@@ -20,64 +20,41 @@
             align-items: center;
             margin-top: 20px;
         }
-        button {
+        select, button {
             margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        #phrase-display {
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <h1>Korean Phrases and Translations</h1>
     <div id="phrase-container">
-        <button id="englishButton">English</button>
-        <button id="spanishButton">Spanish</button>
-        <button id="frenchButton">French</button>
-        <button id="germanButton">German</button>
-        <button id="dutchButton">Dutch</button>
-        <button id="generateButton">Generate Phrase</button>
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="nl">Dutch</option>
+        </select>
         <button id="backButton">Back</button>
+        <button id="generateButton">Generate Phrase</button>
         <button id="forwardButton">Forward</button>
         <p id="phrase-display"></p>
     </div>
- <script>
-    // Korean phrases and translations
-    const phrases = [
-        { korean: "안녕하세요", translations: { en: "Hello", es: "Hola", fr: "Bonjour", de: "Hallo", nl: "Hallo" } },
-        { korean: "감사합니다", translations: { en: "Thank you", es: "Gracias", fr: "Merci", de: "Danke", nl: "Dank je" } },
-        { korean: "미안해요", translations: { en: "I'm sorry", es: "Lo siento", fr: "Je suis désolé", de: "Es tut mir leid", nl: "Het spijt me" } },
-        { korean: "네, 감사합니다", translations: { en: "Yes, thank you", es: "Sí, gracias", fr: "Oui, merci", de: "Ja, danke", nl: "Ja, dank je" } },
-        { korean: "안녕히 가세요", translations: { en: "Goodbye (to someone leaving)", es: "Adiós", fr: "Au revoir", de: "Auf Wiedersehen", nl: "Vaarwel" } },
-        { korean: "사랑해요", translations: { en: "I love you", es: "Te amo", fr: "Je t'aime", de: "Ich liebe dich", nl: "Ik hou van je" } },
-        { korean: "뭐 해요?", translations: { en: "What are you doing?", es: "¿Qué estás haciendo?", fr: "Que fais-tu ?", de: "Was machst du?", nl: "Wat ben je aan het doen?" } },
-        { korean: "네, 이해해요", translations: { en: "Yes, I understand", es: "Sí, entiendo", fr: "Oui, je comprends", de: "Ja, ich verstehe", nl: "Ja, ik begrijp het" } },
-        { korean: "언제 가요?", translations: { en: "When are you leaving?", es: "¿Cuándo te vas?", fr: "Quand pars-tu ?", de: "Wann gehst du?", nl: "Wanneer vertrek je?" } },
-        { korean: "배고파요", translations: { en: "I'm hungry", es: "Tengo hambre", fr: "J'ai faim", de: "Ich habe Hunger", nl: "Ik heb honger" } },
-        { korean: "물 마시고 싶어요", translations: { en: "I want to drink water", es: "Quiero beber agua", fr: "Je veux boire de l'eau", de: "Ich möchte Wasser trinken", nl: "Ik wil water drinken" } },
-        { korean: "배가 아파요", translations: { en: "My stomach hurts", es: "Me duele el estómago", fr: "J'ai mal au ventre", de: "Mir tut der Magen weh", nl: "Mijn maag doet pijn" } },
-        { korean: "도와주세요!", translations: { en: "Help me!", es: "¡Ayúdame!", fr: "Aidez-moi !", de: "Hilf mir!", nl: "Help me!" } },
-        { korean: "잘못했어요", translations: { en: "I made a mistake", es: "Cometí un error", fr: "J'ai fait une erreur", de: "Ich habe einen Fehler gemacht", nl: "Ik heb een fout gemaakt" } },
-        { korean: "날씨가 좋아요", translations: { en: "The weather is nice", es: "El clima está agradable", fr: "Il fait beau", de: "Das Wetter ist schön", nl: "Het weer is mooi" } },
-        { korean: "기다려주세요", translations: { en: "Please wait", es: "Por favor espera", fr: "Attends s'il te plaît", de: "Bitte warte", nl: "Wacht alsjeblieft" } },
-        { korean: "무슨 일이에요?", translations: { en: "What's going on?", es: "¿Qué está pasando?", fr: "Que se passe-t-il ?", de: "Was ist los?", nl: "Wat gebeurt er?" } },
-        { korean: "잘 먹겠습니다", translations: { en: "I will eat well (before a meal)", es: "Voy a comer bien", fr: "Je vais bien manger", de: "Ich werde gut essen", nl: "Ik zal goed eten" } },
-        { korean: "잘 먹었습니다", translations: { en: "I ate well (after a meal)", es: "Comí bien", fr: "J'ai bien mangé", de: "Ich habe gut gegessen", nl: "Ik heb goed gegeten" } },
-        { korean: "배고파요", translations: { en: "I'm hungry", es: "Tengo hambre", fr: "J'ai faim", de: "Ich habe Hunger", nl: "Ik heb honger" } },
-        { korean: "물 마시고 싶어요", translations: { en: "I want to drink water", es: "Quiero beber agua", fr: "Je veux boire de l'eau", de: "Ich möchte Wasser trinken", nl: "Ik wil water drinken" } },
-        { korean: "배가 아파요", translations: { en: "My stomach hurts", es: "Me duele el estómago", fr: "J'ai mal au ventre", de: "Mir tut der Magen weh", nl: "Mijn maag doet pijn" } },
-        { korean: "도와주세요!", translations: { en: "Help me!", es: "¡Ayúdame!", fr: "Aidez-moi !", de: "Hilf mir!", nl: "Help me!" } },
-        { korean: "잘못했어요", translations: { en: "I made a mistake", es: "Cometí un error", fr: "J'ai fait une erreur", de: "Ich habe einen Fehler gemacht", nl: "Ik heb een fout gemaakt" } },
-        { korean: "날씨가 좋아요", translations: { en: "The weather is nice", es: "El clima está agradable", fr:
+    <script>
+        // Korean phrases and translations
+        const phrases = [
+            { korean: "안녕하세요", translations: { en: "Hello", es: "Hola", fr: "Bonjour", de: "Hallo", nl: "Hallo" } },
+            { korean: "감사합니다", translations: { en: "Thank you", es: "Gracias", fr: "Merci", de: "Danke", nl: "Dank je" } },
+            { korean: "미안해요", translations: { en: "I'm sorry", es: "Lo siento", fr: "Je suis désolé", de: "Es tut mir leid", nl: "Het spijt me" } },
+            // Add more phrases and translations here
         ];
 
         let currentIndex = 0;
-        let selectedLanguage = "en"; // Default language is English
 
         // Function to generate a random phrase
         function generateRandomPhrase() {
+            const select = document.getElementById("language-select");
+            const selectedLanguage = select.value;
             const phrase = phrases[currentIndex];
             const translation = phrase.translations[selectedLanguage];
             return `${phrase.korean} - ${translation}`;
@@ -105,36 +82,15 @@
             }
         }
 
-        // Event listeners for language buttons
-        document.getElementById("englishButton").addEventListener("click", () => {
-            selectedLanguage = "en";
-            displayRandomPhrase();
-        });
+        // Attach event listeners to the buttons
+        const backButton = document.getElementById("backButton");
+        backButton.addEventListener("click", goToPreviousPhrase);
 
-        document.getElementById("spanishButton").addEventListener("click", () => {
-            selectedLanguage = "es";
-            displayRandomPhrase();
-        });
+        const generateButton = document.getElementById("generateButton");
+        generateButton.addEventListener("click", displayRandomPhrase);
 
-        document.getElementById("frenchButton").addEventListener("click", () => {
-            selectedLanguage = "fr";
-            displayRandomPhrase();
-        });
-
-        document.getElementById("germanButton").addEventListener("click", () => {
-            selectedLanguage = "de";
-            displayRandomPhrase();
-        });
-
-        document.getElementById("dutchButton").addEventListener("click", () => {
-            selectedLanguage = "nl";
-            displayRandomPhrase();
-        });
-
-        // Event listeners for navigation buttons
-        document.getElementById("generateButton").addEventListener("click", displayRandomPhrase);
-        document.getElementById("backButton").addEventListener("click", goToPreviousPhrase);
-        document.getElementById("forwardButton").addEventListener("click", goToNextPhrase);
+        const forwardButton = document.getElementById("forwardButton");
+        forwardButton.addEventListener("click", goToNextPhrase);
 
         // Initial display
         displayRandomPhrase();
