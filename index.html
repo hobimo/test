@@ -3,129 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Color Generator with Spider</title>
+    <title>Following Eyes</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            transition: background-color 0.5s;
+            cursor: none; /* Hide the default cursor */
         }
-        h1 {
-            margin-top: 50px;
-        }
-        #color-display {
-            font-size: 24px;
-            margin: 20px;
-        }
-        button {
+        .eye {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #0074d9;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid black;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #spider-container {
+        .pupil {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            width: 40px;
+            height: 40px;
             background-color: black;
-            z-index: 999;
-        }
-        #spider-image {
-            max-width: 100%;
-            max-height: 100%;
-            cursor: pointer; /* Add cursor style to indicate it's clickable */
+            border-radius: 50%;
+            left: 30px;
+            top: 30px;
+            transition: transform 100ms;
         }
     </style>
 </head>
 <body>
-    <h1>Random Color Generator with Spider</h1>
-    <div id="color-display">Background Color: <span id="currentColor">#FFFFFF</span></div>
-    <button id="generateButton">Generate Color</button>
-    <div id="spider-container">
-        <img src="https://s26162.pcdn.co/wp-content/uploads/2022/09/scarystoriesspiders-scaled-1.jpg" id="spider-image" alt="Spider Image">
-    </div>
-    <audio id="eerieSound" preload="auto">
-        <source src="https://pixabay.com/sound-effects/download/audio/halloween-impact-05-93808.mp3" type="audio/mpeg">
-    </audio>
-
+    <div class="eye" id="left-eye"></div>
+    <div class="eye" id="right-eye"></div>
+    <div class="pupil" id="left-pupil"></div>
+    <div class="pupil" id="right-pupil"></div>
+    
     <script>
-        const eerieSound = document.getElementById("eerieSound");
-        const spiderImage = document.getElementById("spider-image");
+        const leftEye = document.getElementById("left-eye");
+        const rightEye = document.getElementById("right-eye");
+        const leftPupil = document.getElementById("left-pupil");
+        const rightPupil = document.getElementById("right-pupil");
 
-        // Function to generate a random color in hexadecimal format
-        function generateRandomColor() {
-            const letters = "0123456789ABCDEF";
-            let color = "#";
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
+        document.addEventListener("mousemove", (e) => {
+            // Calculate the distance from the center of the eye
+            const eyeRect = leftEye.getBoundingClientRect();
+            const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+            const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+            const deltaX = e.clientX - eyeCenterX;
+            const deltaY = e.clientY - eyeCenterY;
 
-        // Function to change the background color to the generated color
-        function changeBackgroundColor() {
-            const colorDisplay = document.getElementById("currentColor");
-            const spiderContainer = document.getElementById("spider-container");
-            const newColor = generateRandomColor();
-            document.body.style.backgroundColor = newColor;
-            colorDisplay.textContent = newColor;
+            // Calculate the angle
+            const angle = Math.atan2(deltaY, deltaX);
+            
+            // Limit the pupil's movement within the eye
+            const maxDistance = eyeRect.width / 3;
+            const distance = Math.min(Math.hypot(deltaX, deltaY), maxDistance);
+            const pupilX = Math.cos(angle) * distance;
+            const pupilY = Math.sin(angle) * distance;
 
-            // Check if the color is dark (you can adjust the threshold)
-            const isDarkColor = isColorDark(newColor);
-
-            // Toggle the visibility of the spider container
-            if (isDarkColor) {
-                spiderContainer.style.display = "flex";
-                eerieSound.play(); // Play the eerie sound
-            } else {
-                spiderContainer.style.display = "none";
-                eerieSound.pause();
-                eerieSound.currentTime = 0; // Reset the sound
-            }
-        }
-
-        // Function to check if a color is dark
-        function isColorDark(color) {
-            // Convert the color to RGB format
-            const rgb = parseInt(color.slice(1), 16);
-            const r = (rgb >> 16) & 0xff;
-            const g = (rgb >> 8) & 0xff;
-            const b = (rgb >> 0) & 0xff;
-
-            // Calculate the brightness using the formula
-            // brightness = (0.299 * R + 0.587 * G + 0.114 * B)
-            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-
-            // You can adjust the threshold as needed
-            return brightness < 128;
-        }
-
-        // Attach event listener to the "Generate Color" button
-        const generateButton = document.getElementById("generateButton");
-        generateButton.addEventListener("click", changeBackgroundColor);
-
-        // Attach event listener to the spider image for color generation
-        spiderImage.addEventListener("click", changeBackgroundColor);
-
-        // Initial color generation
-        changeBackgroundColor();
+            // Apply the transformation to the pupils
+            leftPupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+            rightPupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+        });
     </script>
 </body>
 </html>
