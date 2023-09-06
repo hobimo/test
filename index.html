@@ -23,6 +23,9 @@
         select, button {
             margin-top: 10px;
         }
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -36,11 +39,11 @@
             <option value="nl">Dutch</option>
         </select>
         <button id="generateButton">Generate Phrase</button>
-        <button id="backButton">Back</button>
-        <button id="forwardButton">Forward</button>
+        <button id="playAudioButton" style="display:none;">Play Audio</button>
         <p id="phrase-display"></p>
+        <audio id="audioElement" controls></audio>
     </div>
-<script>
+   <script>
     // Korean phrases and translations
     const phrases = [
         { korean: "안녕하세요", translations: { en: "Hello", es: "Hola", fr: "Bonjour", de: "Hallo", nl: "Hallo" } },
@@ -70,48 +73,46 @@
         { korean: "날씨가 좋아요", translations: { en: "The weather is nice", es: "El clima está agradable", fr:
         ];
 
-        let currentIndex = 0;
-
         // Function to generate a random phrase
         function generateRandomPhrase() {
             const select = document.getElementById("language-select");
             const selectedLanguage = select.value;
-            const phrase = phrases[currentIndex];
+            const randomIndex = Math.floor(Math.random() * phrases.length);
+            const phrase = phrases[randomIndex];
             const translation = phrase.translations[selectedLanguage];
-            return `${phrase.korean} - ${translation}`;
+            return { phrase: `${phrase.korean} - ${translation}`, audio: phrase.audio };
         }
 
         // Function to display the generated phrase
         function displayRandomPhrase() {
             const phraseDisplay = document.getElementById("phrase-display");
-            phraseDisplay.textContent = generateRandomPhrase();
+            const playAudioButton = document.getElementById("playAudioButton");
+            const audioElement = document.getElementById("audioElement");
+
+            const { phrase, audio } = generateRandomPhrase();
+
+            phraseDisplay.textContent = phrase;
+
+            if (audio) {
+                audioElement.src = audio;
+                playAudioButton.style.display = "inline-block";
+            } else {
+                playAudioButton.style.display = "none";
+            }
         }
 
-        // Function to go to the previous phrase
-        function goToPreviousPhrase() {
-            if (currentIndex > 0) {
-                currentIndex--;
-            }
-            displayRandomPhrase();
-        }
-
-        // Function to go to the next phrase
-        function goToNextPhrase() {
-            if (currentIndex < phrases.length - 1) {
-                currentIndex++;
-            }
-            displayRandomPhrase();
+        // Function to play audio
+        function playAudio() {
+            const audioElement = document.getElementById("audioElement");
+            audioElement.play();
         }
 
         // Attach event listeners to the buttons
         const generateButton = document.getElementById("generateButton");
         generateButton.addEventListener("click", displayRandomPhrase);
 
-        const backButton = document.getElementById("backButton");
-        backButton.addEventListener("click", goToPreviousPhrase);
-
-        const forwardButton = document.getElementById("forwardButton");
-        forwardButton.addEventListener("click", goToNextPhrase);
+        const playAudioButton = document.getElementById("playAudioButton");
+        playAudioButton.addEventListener("click", playAudio);
 
         // Initial display
         displayRandomPhrase();
