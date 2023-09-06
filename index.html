@@ -3,190 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku Game</title>
+    <title>Name Translator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        .sudoku-board {
-            display: grid;
-            grid-template-columns: repeat(9, 50px);
-            gap: 2px;
-            margin: 20px auto;
+        h1 {
+            margin: 20px;
         }
-        .cell {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #000;
-            text-align: center;
-            font-size: 24px;
-        }
-        .cell input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            font-size: 24px;
-            text-align: center;
+        #translation-result {
+            font-size: 18px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Sudoku Game</h1>
-    <div class="sudoku-board" id="sudoku-board"></div>
-    <button id="solveButton">Solve</button>
+    <h1>Korean Name Translator</h1>
+    <label for="nameInput">Enter your name:</label>
+    <input type="text" id="nameInput">
+    <button id="translateButton">Translate</button>
+    <div id="translation-result"></div>
 
     <script>
-        // Sudoku puzzle data (0 represents empty cells)
-        const puzzle = [
-            [5, 3, 0, 0, 7, 0, 0, 0, 0],
-            [6, 0, 0, 1, 9, 5, 0, 0, 0],
-            [0, 9, 8, 0, 0, 0, 0, 6, 0],
-            [8, 0, 0, 0, 6, 0, 0, 0, 3],
-            [4, 0, 0, 8, 0, 3, 0, 0, 1],
-            [7, 0, 0, 0, 2, 0, 0, 0, 6],
-            [0, 6, 0, 0, 0, 0, 2, 8, 0],
-            [0, 0, 0, 4, 1, 9, 0, 0, 5],
-            [0, 0, 0, 0, 8, 0, 0, 7, 9]
-        ];
+        const nameInput = document.getElementById("nameInput");
+        const translateButton = document.getElementById("translateButton");
+        const translationResult = document.getElementById("translation-result");
 
-        // Create the Sudoku board
-        const sudokuBoard = document.getElementById("sudoku-board");
-
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                const cell = document.createElement("div");
-                cell.classList.add("cell");
-                const input = document.createElement("input");
-                input.type = "number";
-                input.min = "1";
-                input.max = "9";
-                if (puzzle[i][j] !== 0) {
-                    input.value = puzzle[i][j];
-                    input.disabled = true;
-                }
-                cell.appendChild(input);
-                sudokuBoard.appendChild(cell);
+        // Function to translate the input name to Korean
+        function translateName() {
+            const name = nameInput.value;
+            if (name.trim() === "") {
+                alert("Please enter a name.");
+                return;
             }
+
+            // In a real-world scenario, you would make an API request to Google Translate here.
+            // Due to API key requirements, this simplified example demonstrates the process.
+            
+            // Simulate translation (you should replace this with a real API call)
+            const koreanTranslation = "한국어 이름";
+            const romanizedSpelling = "Hangugeo Ireum";
+            
+            // Display the translation result
+            translationResult.innerHTML = `<p>Korean Translation: ${koreanTranslation}</p><p>Romanized Spelling: ${romanizedSpelling}</p>`;
         }
 
-        // Function to check if a Sudoku solution is valid
-        function isSudokuValid(board) {
-            // Check rows
-            for (let i = 0; i < 9; i++) {
-                const rowSet = new Set();
-                for (let j = 0; j < 9; j++) {
-                    if (rowSet.has(board[i][j])) {
-                        return false;
-                    }
-                    if (board[i][j] !== 0) {
-                        rowSet.add(board[i][j]);
-                    }
-                }
-            }
-
-            // Check columns
-            for (let j = 0; j < 9; j++) {
-                const colSet = new Set();
-                for (let i = 0; i < 9; i++) {
-                    if (colSet.has(board[i][j])) {
-                        return false;
-                    }
-                    if (board[i][j] !== 0) {
-                        colSet.add(board[i][j]);
-                    }
-                }
-            }
-
-            // Check 3x3 subgrids
-            for (let i = 0; i < 9; i += 3) {
-                for (let j = 0; j < 9; j += 3) {
-                    const subgridSet = new Set();
-                    for (let x = i; x < i + 3; x++) {
-                        for (let y = j; y < j + 3; y++) {
-                            if (subgridSet.has(board[x][y])) {
-                                return false;
-                            }
-                            if (board[x][y] !== 0) {
-                                subgridSet.add(board[x][y]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        // Function to solve the Sudoku puzzle
-        function solveSudoku() {
-            const solvedPuzzle = JSON.parse(JSON.stringify(puzzle)); // Clone the puzzle
-            if (solveSudokuHelper(solvedPuzzle)) {
-                if (isSudokuValid(solvedPuzzle)) {
-                    // Fill the Sudoku board with the solution
-                    const inputs = document.querySelectorAll(".cell input");
-                    let index = 0;
-                    for (let i = 0; i < 9; i++) {
-                        for (let j = 0; j < 9; j++) {
-                            if (!inputs[index].disabled) {
-                                inputs[index].value = solvedPuzzle[i][j];
-                            }
-                            index++;
-                        }
-                    }
-                } else {
-                    alert("Invalid Sudoku puzzle.");
-                }
-            } else {
-                alert("No solution found.");
-            }
-        }
-
-        // Function to recursively solve the Sudoku puzzle
-        function solveSudokuHelper(board) {
-            for (let row = 0; row < 9; row++) {
-                for (let col = 0; col < 9; col++) {
-                    if (board[row][col] === 0) {
-                        for (let num = 1; num <= 9; num++) {
-                            if (isValidMove(board, row, col, num)) {
-                                board[row][col] = num;
-                                if (solveSudokuHelper(board)) {
-                                    return true;
-                                }
-                                board[row][col] = 0;
-                            }
-                        }
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        // Function to check if a number can be placed in a Sudoku cell
-        function isValidMove(board, row, col, num) {
-            for (let i = 0; i < 9; i++) {
-                if (board[row][i] === num || board[i][col] === num) {
-                    return false;
-                }
-            }
-
-            const startRow = Math.floor(row / 3) * 3;
-            const startCol = Math.floor(col / 3) * 3;
-            for (let i = startRow; i < startRow + 3; i++) {
-                for (let j = startCol; j < startCol + 3; j++) {
-                    if (board[i][j] === num) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        // Attach event listener to the Solve button
-        const solveButton = document.getElementById("solveButton");
-        solveButton.addEventListener("click", solveSudoku);
+        // Attach event listener to the Translate button
+        translateButton.addEventListener("click", translateName);
     </script>
 </body>
 </html>
