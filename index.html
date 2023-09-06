@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Story Title Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #title {
+            font-size: 24px;
+            margin: 20px;
+        }
+
+        #generateButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Story Title Generator</h1>
+    <p>Click the button to generate a random story title:</p>
+    <div id="title"></div>
+    <button id="generateButton">Generate Title</button>
+
+    <script>
+        const titles = [
+            "The Mysterious Key",
+            "The Enchanted Forest",
+            "The Lost Treasure",
+            "The Haunted Mansion",
+            "The Secret Passage",
+            "The Magical Journey",
+            "The Quest for Adventure",
+            "The Forgotten World",
+            "The Time Traveler's Dilemma",
+            "The Hidden Gem"
+        ];
+
+        // Function to generate a random story title
+        function generateRandomTitle() {
+            const randomIndex = Math.floor(Math.random() * titles.length);
+            return titles[randomIndex];
+        }
+
+        // Function to display the generated title
+        function displayRandomTitle() {
+            const titleElement = document.getElementById("title");
+            titleElement.textContent = generateRandomTitle();
+        }
+
+        // Attach the event listener to the button
+        const generateButton = document.getElementById("generateButton");
+        generateButton.addEventListener("click", displayRandomTitle);
+    </script>
+</body>
+</html>
