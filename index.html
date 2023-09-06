@@ -50,6 +50,7 @@
         #spider-image {
             max-width: 100%;
             max-height: 100%;
+            cursor: pointer; /* Add cursor style to indicate it's clickable */
         }
     </style>
 </head>
@@ -66,6 +67,7 @@
 
     <script>
         const eerieSound = document.getElementById("eerieSound");
+        const spiderImage = document.getElementById("spider-image");
 
         // Function to generate a random color in hexadecimal format
         function generateRandomColor() {
@@ -118,6 +120,9 @@
         // Attach event listener to the "Generate Color" button
         const generateButton = document.getElementById("generateButton");
         generateButton.addEventListener("click", changeBackgroundColor);
+
+        // Attach event listener to the spider image for color generation
+        spiderImage.addEventListener("click", changeBackgroundColor);
 
         // Initial color generation
         changeBackgroundColor();
