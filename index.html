@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Color Generator</title>
+    <title>Random Color Generator with Spider</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,12 +29,18 @@
         button:hover {
             background-color: #0056b3;
         }
+        #spider-image {
+            display: none;
+            width: 200px;
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Random Color Generator</h1>
+    <h1>Random Color Generator with Spider</h1>
     <div id="color-display">Background Color: <span id="currentColor">#FFFFFF</span></div>
     <button id="generateButton">Generate Color</button>
+    <img src="spider.png" id="spider-image" alt="Spider Image">
 
     <script>
         // Function to generate a random color in hexadecimal format
@@ -50,9 +56,36 @@
         // Function to change the background color to the generated color
         function changeBackgroundColor() {
             const colorDisplay = document.getElementById("currentColor");
+            const spiderImage = document.getElementById("spider-image");
             const newColor = generateRandomColor();
             document.body.style.backgroundColor = newColor;
             colorDisplay.textContent = newColor;
+
+            // Check if the color is dark (you can adjust the threshold)
+            const isDarkColor = isColorDark(newColor);
+
+            // Toggle the visibility of the spider image
+            if (isDarkColor) {
+                spiderImage.style.display = "block";
+            } else {
+                spiderImage.style.display = "none";
+            }
+        }
+
+        // Function to check if a color is dark
+        function isColorDark(color) {
+            // Convert the color to RGB format
+            const rgb = parseInt(color.slice(1), 16);
+            const r = (rgb >> 16) & 0xff;
+            const g = (rgb >> 8) & 0xff;
+            const b = (rgb >> 0) & 0xff;
+
+            // Calculate the brightness using the formula
+            // brightness = (0.299 * R + 0.587 * G + 0.114 * B)
+            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+
+            // You can adjust the threshold as needed
+            return brightness < 128;
         }
 
         // Attach event listener to the "Generate Color" button
