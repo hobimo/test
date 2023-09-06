@@ -3,60 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Story Title Generator !!! </title>
+    <title>Korean Phrases</title>
     <style>
         body {
+            background-color: lightblue;
+            color: black;
             font-family: Arial, sans-serif;
             text-align: center;
         }
-
-        #title {
-            font-size: 24px;
-            margin: 20px;
+        h1 {
+            margin-top: 20px;
         }
-
-        #generateButton {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
+        #phrase-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        select {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Random Story Title Generator</h1>
-    <p>Click the button to generate a random story title:</p>
-    <div id="title"></div>
-    <button id="generateButton">Generate Title</button>
-
+    <h1>Korean Phrases and Translations</h1>
+    <div id="phrase-container">
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="nl">Dutch</option>
+        </select>
+        <ul id="phrase-list"></ul>
+    </div>
     <script>
-        const titles = [
-            "The Mysterious Key",
-            "The Enchanted Forest",
-            "The Lost Treasure",
-            "The Haunted Mansion",
-            "The Secret Passage",
-            "The Magical Journey",
-            "The Quest for Adventure",
-            "The Forgotten World",
-            "The Time Traveler's Dilemma",
-            "The Hidden Gem"
+        // Korean phrases and translations
+        const phrases = [
+            { korean: "안녕하세요", translations: { en: "Hello", es: "Hola", fr: "Bonjour", de: "Hallo", nl: "Hallo" } },
+            { korean: "감사합니다", translations: { en: "Thank you", es: "Gracias", fr: "Merci", de: "Danke", nl: "Dank je" } },
+            // Add more phrases and translations here
         ];
 
-        // Function to generate a random story title
-        function generateRandomTitle() {
-            const randomIndex = Math.floor(Math.random() * titles.length);
-            return titles[randomIndex];
+        // Function to populate the phrase list
+        function populatePhraseList() {
+            const select = document.getElementById("language-select");
+            const selectedLanguage = select.value;
+            const phraseList = document.getElementById("phrase-list");
+            phraseList.innerHTML = "";
+
+            for (let i = 0; i < phrases.length; i++) {
+                const phrase = phrases[i];
+                const translation = phrase.translations[selectedLanguage];
+                const listItem = document.createElement("li");
+                listItem.textContent = `${phrase.korean} - ${translation}`;
+                phraseList.appendChild(listItem);
+            }
         }
 
-        // Function to display the generated title
-        function displayRandomTitle() {
-            const titleElement = document.getElementById("title");
-            titleElement.textContent = generateRandomTitle();
-        }
+        // Add event listener to language select
+        const languageSelect = document.getElementById("language-select");
+        languageSelect.addEventListener("change", populatePhraseList);
 
-        // Attach the event listener to the button
-        const generateButton = document.getElementById("generateButton");
-        generateButton.addEventListener("click", displayRandomTitle);
+        // Initial population of phrase list
+        populatePhraseList();
     </script>
 </body>
 </html>
